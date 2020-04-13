@@ -1,5 +1,7 @@
 package org.leetcode;
 
+import java.util.stream.IntStream;
+
 public class MaxSubarrayDivide {
     public static void main(String[] args) {
         MaxSubarrayDivide maxSubarray = new MaxSubarrayDivide();
@@ -21,10 +23,33 @@ public class MaxSubarrayDivide {
 
         int middleIdx = getMiddleIdx(leftIdx, rightIdx);
 
-        return Math.max(
+        return IntStream.of(
+            maxSumMiddle(arr, leftIdx, middleIdx, rightIdx),
             maxSum(arr, leftIdx, middleIdx),
             maxSum(arr, middleIdx + 1, rightIdx)
-        );
+        ).max().orElse(0);
+    }
+
+    private int maxSumMiddle(int[] arr, int leftIdx, int middleIdx, int rightIdx) {
+        int sumLeft = Integer.MIN_VALUE;
+        int sum = 0;
+        for (int i = middleIdx; i >= leftIdx; i--) {
+            sum += arr[i];
+            if (sum > sumLeft) {
+                sumLeft = sum;
+            }
+        }
+
+        int sumRight = Integer.MIN_VALUE;
+        sum = 0;
+        for (int i = middleIdx + 1; i <= rightIdx; i++) {
+            sum += arr[i];
+            if (sum > sumRight) {
+                sumRight = sum;
+            }
+        }
+
+        return sumLeft + sumRight;
     }
 
     private int getMiddleIdx(int leftIdx, int rightIdx) {
